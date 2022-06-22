@@ -22,7 +22,9 @@ import apache_beam as beam
 import numpy as np
 import tensorflow as tf
 import tensorflow_model_analysis as tfma
-from tensorflow_model_analysis import constants, model_util, types
+from tensorflow_model_analysis import constants, types
+from tensorflow_model_analysis.utils import model_util
+
 from tensorflow_model_analysis.extractors import extractor
 from tfx_bsl.tfxio import tensor_adapter
 
@@ -137,9 +139,19 @@ def _ExtractPredictions(  # pylint: disable=invalid-name
       _TFMAPredictionDoFn(eval_shared_models))
 
 
+def _model_loader_helper(model_path: Text):
+  """Returns a function that loads a scikit-learn model."""
+  #return lambda: pickle.load(tf.io.gfile.GFile(model_path, 'r'))
+  with open(model_path , 'rb') as f:
+    m = pickle.load(f)
+  return m
+
+
 def _custom_model_loader_fn(model_path: Text):
   """Returns a function that loads a scikit-learn model."""
-  return lambda: pickle.load(tf.io.gfile.GFile(model_path, 'rb'))
+  #return lambda: pickle.load(tf.io.gfile.GFile(model_path, 'r'))
+  return _model_loader_helper(model_path)
+
 
 
 # TFX Evaluator will call the following functions.

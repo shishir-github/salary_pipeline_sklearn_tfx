@@ -1,0 +1,10 @@
+apiVersion: "serving.kserve.io/v1beta1"
+kind: "InferenceService"
+metadata:
+  name: "sklearn-salary"
+spec:
+  predictor:
+    serviceAccountName: user-gcp-sa
+    sklearn:
+      storageUri: "gs://moonlit-watch-349713-store/models"
+
